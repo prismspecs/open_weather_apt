@@ -1,0 +1,122 @@
+<html>
+
+<head>
+    <script src="wav.js"></script>
+    <script src="dsp.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+    <style>
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        .flex {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .f1 {
+            flex-basis: 100%;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+
+        .f2 {
+            flex-basis: 50%;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+
+        input[type='file'] {
+            color: transparent;
+            width: 70px;
+        }
+    </style>
+
+    <title>open weather apt</title>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="flex">
+
+            <div class="f1">
+
+                <h1>open weather apt</h1>
+                <h3>forked from <a href="https://github.com/ThatcherC/APT3000">ThatcherC</a> on Github</h3>
+
+                <h4 style="margin-top:-10">Instructions</h4>
+                <list>
+                    <li>Upload a 11025Hz WAV recording of an APT pass (here's a <a href='/NOAA-15-0530.wav'>sample</a>)</li>
+                    <li>then hit submit</li>
+                </list>
+
+            </div>
+
+
+            <div class="f1">
+
+                <div>
+                    <input type="radio" id="abs" name="demod_mode" value="abs" checked>
+                    <label for="abs">Absolute Value</label>
+                </div>
+
+                <div>
+                    <input type="radio" id="cos" name="demod_mode" value="cos">
+                    <label for="cos">Cosine</label>
+                </div>
+
+
+
+                <input class="browse" type="file" id="fileInput" value="Open WAV file">
+
+                <em><input type="text" class="form-control" id="fileName" readonly></em>
+
+                <div class="spinner-loader" id="spinner" style="visibility:hidden">
+                    Loading…
+                </div>
+
+            </div>
+
+
+            <div class="f1">
+                <div class="col-md-3" id="buttons" style="visibility:hidden">
+                    <input value="View A" class="btn btn-default" type="button" onclick="viewA()">
+                    <input value="View B" class="btn btn-default" type="button" onclick="viewB()">
+                    <input value="View AB" class="btn btn-default" type="button" onclick="viewAB()">
+                </div>
+
+                <div class="col-md-3">
+                    <div class="alert-small alert-danger" role="alert" id="alert"></div>
+                </div>
+            </div>
+
+
+            <div class="f1">
+                <canvas id="output" width="1040" height="400" style="padding-top:5"></canvas>
+            </div>
+
+            <div class="f1">
+
+                <canvas id="myChart" style="width:100%;" width="1040" height="400"></canvas>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+
+    <script src='new.js'></script>
+</body>
+
+</html>
