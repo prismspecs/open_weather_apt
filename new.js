@@ -27,56 +27,63 @@ window.onload = function() {
 	var fileInput = document.getElementById('fileInput');
 
 	fileInput.addEventListener('change', function(e) {
-		var file = fileInput.files[0];
-		document.getElementById('fileName').value = file.name;
-
-		document.getElementById('spinner').style.visibility = 'visible';
-		document.getElementById('buttons').style.visibility = 'hidden';
-		document.getElementById('alert').style.visibility = 'hidden';
-
-		wavFile = new wav(file);
-		wavFile.onloadend = function() {
-			console.log("loaded");
-
-			if (wavFile.sampleRate != 11025) {
-				document.getElementById('alert').innerHTML = "File must have a 11025Hz sample rate";
-				document.getElementById('alert').style.visibility = 'visible';
-				document.getElementById('spinner').style.visibility = 'hidden';
-			} else {
-
-				var demod_mode = document.querySelector('input[name="demod_mode"]:checked').value;
-
-				switch(demod_mode) {
-					case "abs":
-						wavData = demodAbs(wavFile);
-						break;
-
-					case "cos":
-						wavData = demodCos(wavFile);
-						break;
-				}
-
-				console.log("rectified");
-				console.log(wavData);
-
-				// filter
-				var filtered = filterSamples(wavData);
-				// console.log(filtered);
-
-				// normalize
-				normalizedData = new Float32Array(wavData.length);
-				var normalized_mean = normalizeData(filtered);
-				normalizedData = normalized_mean[0];
-				signalMean = normalized_mean[1];
-
-				console.log(normalizedData);
-
-				chartArray(normalizedData, 10);
-
-			}
-		};
+		file = fileInput.files[0];
 	});
 }
+
+function start() {
+
+	document.getElementById('fileName').value = file.name;
+	document.getElementById('spinner').style.visibility = 'visible';
+	document.getElementById('buttons').style.visibility = 'hidden';
+	document.getElementById('alert').style.visibility = 'hidden';
+
+	wavFile = new wav(file);
+	wavFile.onloadend = function() {
+
+		console.log("loaded");
+
+		if (wavFile.sampleRate != 11025) {
+
+			document.getElementById('alert').innerHTML = "File must have a 11025Hz sample rate";
+			document.getElementById('alert').style.visibility = 'visible';
+			document.getElementById('spinner').style.visibility = 'hidden';
+
+		} else {
+
+			var demod_mode = document.querySelector('input[name="demod_mode"]:checked').value;
+
+			switch(demod_mode) {
+				case "abs":
+					wavData = demodAbs(wavFile);
+					break;
+
+				case "cos":
+					wavData = demodCos(wavFile);
+					break;
+			}
+
+			console.log("rectified");
+			console.log(wavData);
+
+			// filter
+			var filtered = filterSamples(wavData);
+			// console.log(filtered);
+
+			// normalize
+			normalizedData = new Float32Array(wavData.length);
+			var normalized_mean = normalizeData(filtered);
+			normalizedData = normalized_mean[0];
+			signalMean = normalized_mean[1];
+
+			console.log(normalizedData);
+
+			chartArray(normalizedData, 10);
+
+		}
+	};
+}
+
 
 function demodAbs(input) {
 	var data = [];
@@ -87,6 +94,7 @@ function demodAbs(input) {
 
 	return data;
 }
+
 
 function demodCos(input) {
 	var data = [];
@@ -105,6 +113,17 @@ function demodCos(input) {
 	}
 
 	data[0] = data[1];
+
+	return data;
+}
+
+
+function demodHilbert(input) {
+	var data = [];
+
+	for (var i = 0; i < input.dataSamples.length; i++) {
+		data[i] = Math.abs(input.dataSamples[i]);
+	}
 
 	return data;
 }

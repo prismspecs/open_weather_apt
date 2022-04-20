@@ -1,0 +1,68 @@
+body {
+    font-family: 'Bitter', serif;
+}
+
+.container {
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.f1 {
+    flex-basis: 100%;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.f2 {
+    flex-basis: 50%;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.break {
+    height:1rem;
+    margin:4px 0px;
+}
+
+.container {
+    padding:20px;
+}
+
+body {
+    font-size: 16px;
+}
+
+h1 {
+    font-size: 32px;
+    margin: 16px 0px;
+}
+
+h2 {
+    font-size: 24px;
+    margin: 12px 0px;
+}
+
+p {
+    margin:8px 0px;
+}
+
+a {
+    color: #8899dd;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Oxygen', sans-serif;
+}
+
+input[type='file'] {
+    color: transparent;
+    width: 70px;
+}
