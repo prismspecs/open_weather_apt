@@ -1,12 +1,16 @@
 <html>
 
 <head>
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="wav.js"></script>
     <script src="dsp.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="fileSaver.js"></script>
+    <script src="opencv.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600&family=Oxygen:wght@400;700&display=swap" rel="stylesheet">
@@ -20,45 +24,74 @@
 
 <body>
 
+    <div class="error_outer">
+
+        <div class="error_inner">
+
+            <div class="text">
+
+            </div>
+
+        <button type="button" name="button" onclick="$('.error_outer').fadeOut()">Okay</button>
+
+        </div>
+
+    </div>
+
     <div class="container">
 
         <div class="flex">
 
-            <div class="f1">
+            <div class="f1 divider">
 
                 <h1>open weather apt</h1>
                 <p>forked from <a href="https://github.com/ThatcherC/APT3000">ThatcherC</a> on Github</p>
+
+            </div>
+
+            <div class="f1">
 
                 <div class="break">
 
                 </div>
 
                 <h2>Instructions</h2>
-                <p>Select a WAV file from your computer</p>
+                <div class="indent">
 
-                <input class="browse" type="file" id="fileInput" value="Open WAV file">
-                <em><input type="text" class="form-control" id="fileName" readonly></em>
-                <div class="spinner-loader" id="spinner" style="visibility:hidden">
-                    Loading…
+                    <p>1. Select a WAV file from your computer</p>
+
+                    <input class="browse" type="file" id="fileInput" value="Open WAV file">
+                    <em><input type="text" class="form-control" id="fileName" style="opacity:0;" readonly></em>
+
                 </div>
 
-            </div>
+                <div class="break">
 
+                </div>
+            </div>
 
             <div class="f1">
 
-                <p>Select a demodulation method</p>
+                <div class="indent">
 
-                <div>
-                    <input type="radio" id="abs" name="demod_mode" value="abs" checked>
-                    <label for="abs">Absolute Value</label>
+
+                    <p>2. Select a demodulation method</p>
+
+                    <div>
+                        <input type="radio" id="abs" name="demod_mode" value="abs" checked>
+                        <label for="abs">Absolute Value</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="cos" name="demod_mode" value="cos">
+                        <label for="cos">Cosine</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="hilbertfft" name="demod_mode" value="hilbertfft">
+                        <label for="hilbertfft">HilbertFFT</label>
+                    </div>
                 </div>
-
-                <div>
-                    <input type="radio" id="cos" name="demod_mode" value="cos">
-                    <label for="cos">Cosine</label>
-                </div>
-
 
             </div>
 
@@ -68,10 +101,27 @@
 
                 </div>
 
-                <button onclick="start()">Engage!</button>
+                <div class="indent">
 
+                    <p>3. Create!</p>
+
+                    <button onclick="start()">Create Image</button>
+                </div>
+
+                <div class="spinner-loader indent" id="spinner" style="visibility:hidden">
+                    Loading…
+                </div>
+
+                <div class="divider">
+                </div>
+
+                <div class="break">
+                </div>
 
             </div>
+
+
+
 
 
             <div class="f1">
@@ -87,8 +137,42 @@
             </div>
 
 
+            <!-- MAIN CANVAS -->
             <div class="f1">
                 <canvas id="output" width="1040" height="400" style="padding-top:5"></canvas>
+                <button class="button_group_1" id="download_output" onclick="">Save Image</button>
+                <button class="button_group_1" id="equalize_button" onclick="histogramEqualization()">Histogram Equalize Image</button>
+
+                <script>
+                    var output_canvas = document.getElementById("output");
+                    var download_output = document.getElementById('download_output');
+                    download_output.onclick = function(e) {
+                        // draw to canvas...
+                        output_canvas.toBlob(function(blob) {
+                            saveAs(blob, "apt.png");
+                        });
+                    };
+                </script>
+
+            </div>
+
+
+            <!-- HISTOGRAM EQUALIZED CANVAS -->
+            <div class="f1">
+                <canvas id="equalized" width="1040" height="400" style="padding-top:5"></canvas>
+                <button id="download_equalized" onclick="">Save Equalized Image</button>
+
+                <script>
+                    var equalized_canvas = document.getElementById("equalized");
+                    var download_equalized = document.getElementById('download_equalized');
+                    download_equalized.onclick = function(e) {
+                        // draw to canvas...
+                        equalized_canvas.toBlob(function(blob) {
+                            saveAs(blob, "apt.png");
+                        });
+                    };
+                </script>
+
             </div>
 
             <div class="f1">

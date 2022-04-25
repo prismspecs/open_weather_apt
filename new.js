@@ -2,6 +2,7 @@ var wavData = [];
 
 var numTaps = 50;
 var coeffs = getLowPassFIRCoeffs(11025, 1200, numTaps);
+// console.log(coeffs);
 var filter = new FIRFilter(coeffs);
 
 var signalMean;
@@ -33,7 +34,19 @@ window.onload = function() {
 
 function start() {
 
-	document.getElementById('fileName').value = file.name;
+	try {
+
+		document.getElementById('fileName').value = file.name;
+
+	} catch (error) {
+
+		$(".error_outer").fadeIn();
+		$(".error_inner .text").html("Please first select a file");
+
+		return;
+
+	}
+
 	document.getElementById('spinner').style.visibility = 'visible';
 	document.getElementById('buttons').style.visibility = 'hidden';
 	document.getElementById('alert').style.visibility = 'hidden';
@@ -53,7 +66,7 @@ function start() {
 
 			var demod_mode = document.querySelector('input[name="demod_mode"]:checked').value;
 
-			switch(demod_mode) {
+			switch (demod_mode) {
 				case "abs":
 					wavData = demodAbs(wavFile);
 					break;
@@ -61,10 +74,19 @@ function start() {
 				case "cos":
 					wavData = demodCos(wavFile);
 					break;
+
+				case "hilbertfft":
+
+					break;
 			}
 
-			console.log("rectified");
-			console.log(wavData);
+
+			// coeffs = getLowPassFIRCoeffs(11025, 1200, numTaps);
+
+
+
+			// console.log("rectified");
+			// console.log(wavData);
 
 			// filter
 			var filtered = filterSamples(wavData);
@@ -76,9 +98,12 @@ function start() {
 			normalizedData = normalized_mean[0];
 			signalMean = normalized_mean[1];
 
-			console.log(normalizedData);
+			// console.log(normalizedData);
 
-			chartArray(normalizedData, 10);
+			// reveal controls for saving image etc
+			$(".button_group_1").show();
+
+			// chartArray(normalizedData, 10);
 
 		}
 	};
@@ -108,7 +133,7 @@ function demodCos(input) {
 	var maxVal = 0.0;
 	var minVal = 100;
 	for (var c = 1; c < input.dataSamples.length; c++) {
-		var temp = Math.sqrt(Math.pow(input.dataSamples[c - 1],2) + Math.pow(input.dataSamples[c],2) - input.dataSamples[c - 1] * input.dataSamples[c] * cos2);
+		var temp = Math.sqrt(Math.pow(input.dataSamples[c - 1], 2) + Math.pow(input.dataSamples[c], 2) - input.dataSamples[c - 1] * input.dataSamples[c] * cos2);
 		data[c] = temp / sinArg;
 	}
 
@@ -281,6 +306,162 @@ function convolveWithSync(start, range) {
 		"score": maxVal
 	};
 }
+
+function histogramEqualization() {
+	let imgElement = document.getElementById("output");
+	let src = cv.imread(imgElement);
+	let dst = new cv.Mat();
+	let hsvPlanes = new cv.MatVector();
+	let mergedPlanes = new cv.MatVector();
+	cv.cvtColor(src, src, cv.COLOR_RGB2HSV, 0);
+	cv.split(src, hsvPlanes);
+	let H = hsvPlanes.get(0);
+	let S = hsvPlanes.get(1);
+	let V = hsvPlanes.get(2);
+	cv.equalizeHist(V, V);
+	mergedPlanes.push_back(H);
+	mergedPlanes.push_back(S);
+	mergedPlanes.push_back(V);
+	cv.merge(mergedPlanes, src);
+	cv.cvtColor(src, dst, cv.COLOR_HSV2RGB, 0);
+	cv.imshow("equalized", dst);
+	src.delete();
+	dst.delete();
+	hsvPlanes.delete();
+	mergedPlanes.delete();
+}
+
+
+
+
+
+
+
+
+
+function hildemod(data, size) {
+	// the data is real
+	// size must be a power of two the following test that.
+	// a binary number that is a power of two only has one bit on
+	// an integer x and x -1 has one less bit on than x
+	// therefore if x is a power of 2, x and x-1 has no bits on and is equal to z
+	if (((size & (size - 1)) != 0) || (size <= 0)) {
+		console.log(" size for Hilbert is not a power of two. Size is " + size);
+	}
+
+	var dataLen = data.length;
+
+	var dataDemod = new Float32Array(dataLen);
+
+	var thisSet;
+	var thisSetDM;
+	var demod = new Float32Array(dataLen);
+
+	if (size >= dataLen) {
+		console.log(" size for Hilbert FFT is greater that then size of the data file");
+		console.log(" Hilbert FFT size is " + size);
+		console.log(" Data files size is " + dataLen);
+	}
+
+	var num_hils = dataLen / size;
+	for (var ii = 0; ii < num_hils; ii++) {
+		var ptr = ii * size;
+
+		thisSet = data.slic(ptr, ptr + size);
+		// thisSet = subset(data, ptr, size);
+
+		var hil = hilbert(thisSet);
+		//println("hil");
+		thisSetDM = abs_cpx(hil);
+
+		for (var jj = 0; jj < size; jj++) {
+			demod[jj + ptr] = thisSetDM[jj];
+		}
+	}
+
+	return demod;
+
+}
+
+
+function hilbert(data) {
+	var num = data.length;
+	fft = new FFT(num, 10);
+
+	// compute the FFT of the real array xr
+	fft.forward(data);
+
+	var fftr = new Float32Array(num);
+
+	fftr = fft.getSpectrumReal();
+
+	var ffti = new Float32Array(num);
+	ffti = fft.getSpectrumImaginary();
+
+
+	//println("fft before mult ");
+	//print_cvec(fftr, ffti, 20);
+	//println("end fft before mult");
+	// remove negative components
+	var lower = 1 + num / 2;
+	var upper = num;
+
+	for (var ii = lower; ii < upper; ii++) {
+		fftr[ii] = 0;
+		ffti[ii] = 0;
+	}
+	for (var ii = 1; ii < num / 2; ii++) {
+		fftr[ii] = 2 * fftr[ii];
+		ffti[ii] = 2 * ffti[ii];
+	}
+	//println("fft after mult");
+	//for (int ii = 0; ii < 20; ii++) {
+	//  println(fftr[ii], "  ", ffti[ii]);
+	//}
+	//print("end fft after mult");
+
+	var hil = ifft_cpx(fftr, ffti);
+
+	//println("hil");
+	//for (int ii = 0; ii < m; ii++) {
+	//  println(hil[ii][0], "  ", hil[ii][1]);
+	//}
+
+	return hil;
+}
+
+
+
+/** computes inverse fft give comples inputs
+
+  */
+function ifft_cpx(xr, xi) {
+
+	var num = xr.length;
+
+	var Xc = fft_cpx(xr, xi);
+
+	for (var ii = 0; ii < num; ii++) {
+		Xc[ii][0] = Xc[ii][0] / num;
+		Xc[ii][1] = Xc[ii][1] / num;
+	}
+
+	var xres;
+	xres[0][0] = Xc[0][0];
+	xres[0][1] = Xc[0][1];
+
+	for (var ii = num - 1; ii > 0; ii--) {
+		xres[num - ii][0] = Xc[ii][0];
+		xres[num - ii][1] = Xc[ii][1];
+	}
+
+	return xres;
+
+}
+
+
+
+
 
 
 
