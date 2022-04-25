@@ -32,7 +32,7 @@
 
             </div>
 
-        <button type="button" name="button" onclick="$('.error_outer').fadeOut()">Okay</button>
+            <button type="button" name="button" onclick="$('.error_outer').fadeOut()">Okay</button>
 
         </div>
 
@@ -112,24 +112,24 @@
                     Loading…
                 </div>
 
-                <div class="divider">
+                <div class="break">
                 </div>
 
-                <div class="break">
+                <div class="divider">
                 </div>
 
             </div>
 
 
-
-
-
             <div class="f1">
-                <div class="col-md-3" id="buttons" style="visibility:hidden">
-                    <input value="View A" class="btn btn-default" type="button" onclick="viewA()">
-                    <input value="View B" class="btn btn-default" type="button" onclick="viewB()">
-                    <input value="View AB" class="btn btn-default" type="button" onclick="viewAB()">
+
+                <div class="break">
                 </div>
+
+                <input class="view_buttons" value="View A" type="button" onclick="viewA()">
+                <input class="view_buttons" value="View B" type="button" onclick="viewB()">
+                <input class="view_buttons" value="View AB" type="button" onclick="viewAB()">
+
 
                 <div class="col-md-3">
                     <div class="alert-small alert-danger" role="alert" id="alert"></div>
@@ -140,8 +140,8 @@
             <!-- MAIN CANVAS -->
             <div class="f1">
                 <canvas id="output" width="1040" height="400" style="padding-top:5"></canvas>
-                <button class="button_group_1" id="download_output" onclick="">Save Image</button>
-                <button class="button_group_1" id="equalize_button" onclick="histogramEqualization()">Histogram Equalize Image</button>
+                <button class="image_buttons" id="download_output" onclick="">Save Image</button>
+                <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Histogram Equalize Image</button>
 
                 <script>
                     var output_canvas = document.getElementById("output");
@@ -160,7 +160,7 @@
             <!-- HISTOGRAM EQUALIZED CANVAS -->
             <div class="f1">
                 <canvas id="equalized" width="1040" height="400" style="padding-top:5"></canvas>
-                <button id="download_equalized" onclick="">Save Equalized Image</button>
+                <button class="histo_buttons" id="download_equalized" onclick="">Save Equalized Image</button>
 
                 <script>
                     var equalized_canvas = document.getElementById("equalized");

@@ -81,7 +81,7 @@ canvas {
     margin-left:12px;
 }
 
-.button_group_1 {
+.view_buttons, .image_buttons, .histo_buttons {
     display:none;
 }
 

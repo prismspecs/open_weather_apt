@@ -14,7 +14,6 @@ var imageCTX = imageCanvas.getContext("2d");
 window.onload = function() {
 
 	document.getElementById('spinner').style.visibility = 'hidden';
-	document.getElementById('buttons').style.visibility = 'hidden';
 	document.getElementById('alert').style.visibility = 'hidden';
 
 	try {
@@ -48,7 +47,6 @@ function start() {
 	}
 
 	document.getElementById('spinner').style.visibility = 'visible';
-	document.getElementById('buttons').style.visibility = 'hidden';
 	document.getElementById('alert').style.visibility = 'hidden';
 
 	wavFile = new wav(file);
@@ -100,8 +98,6 @@ function start() {
 
 			// console.log(normalizedData);
 
-			// reveal controls for saving image etc
-			$(".button_group_1").show();
 
 			// chartArray(normalizedData, 10);
 
@@ -174,8 +170,8 @@ function filterSamples(input) {
 	console.log("filtered");
 	// console.log(filteredData);
 
-	document.getElementById('spinner').style.visibility = 'hidden';
-	document.getElementById('buttons').style.visibility = 'visible';
+	$(".view_buttons").show();
+	$("#spinner").hide();
 
 	//uncomment if using the chart
 	// chartArray();
@@ -247,6 +243,9 @@ function chartArray(input, resolution) {
 //starting index comes from convolution, lineCount comes from math
 //this kind of comes from https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
 function createImage(startingIndex, pixelScale, pixelStart) {
+
+	// reveal controls for saving image etc
+	$(".image_buttons").show();
 
 	lineCount = Math.floor(normalizedData.length / 5513) / pixelScale;
 	imageCanvas.height = lineCount;
@@ -329,6 +328,8 @@ function histogramEqualization() {
 	dst.delete();
 	hsvPlanes.delete();
 	mergedPlanes.delete();
+
+	$(".histo_buttons").show();
 }
 
 
