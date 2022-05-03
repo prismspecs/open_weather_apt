@@ -1,5 +1,5 @@
 body {
-    font-family: 'Bitter', serif;
+    font-family: 'Roboto', serif;
 }
 
 canvas {
@@ -8,6 +8,12 @@ canvas {
 
 * {
     box-sizing: border-box;
+}
+
+.navbar, .footer {
+    /* background-color:; */
+    width:100%;
+    color:#00aa6e;
 }
 
 .error_outer {
@@ -46,7 +52,7 @@ canvas {
 }
 
 .container {
-    max-width: 1040px;
+    max-width: 1140px;
     margin: 0 auto;
 }
 
@@ -54,6 +60,22 @@ canvas {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content:space-between;
+    margin:1rem 0;
+}
+
+.f_note {
+    flex-basis:25%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    color:#fff;
+    background-color:#00aa6e;
+    padding:1rem;
+}
+.f_content {
+    flex-basis:70%;
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .f1 {
@@ -95,7 +117,7 @@ body {
 
 h1 {
     font-size: 32px;
-    margin: 16px 0px;
+    /* margin: 16px 0px; */
 }
 
 h2 {
@@ -111,11 +133,7 @@ a {
     color: #8899dd;
 }
 
-h1,
-h2,
-h3 {
-    font-family: 'Oxygen', sans-serif;
-}
+
 
 
 

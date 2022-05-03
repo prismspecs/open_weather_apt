@@ -5,6 +5,7 @@
 
     <script src="wav.js"></script>
     <script src="dsp.js"></script>
+    <script src="fft.js"></script>
 
     <script src="fileSaver.js"></script>
     <script src="opencv.js"></script>
@@ -13,7 +14,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600&family=Oxygen:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
+
 
     <link href="reset.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
@@ -38,22 +40,28 @@
 
     </div>
 
+
+
+
+
     <div class="container">
+
+        <div class="navbar">
+            <h1>open-weather apt</h1>
+        </div>
+
 
         <div class="flex">
 
-            <div class="f1 divider">
-
-                <h1>open weather apt</h1>
-                <p>forked from <a href="https://github.com/ThatcherC/APT3000">ThatcherC</a> on Github</p>
+            <div class="f_note">
+                open-weather apt is a browser based decoder for NOAA satellite images. <br><br>
+                NOAA satellites sense earth’s surface using visible light and infrared sensors. The data from these sensors is combined to produce images.
+                <br><br>
+                The satellites encode image data into a 2500 Hz signal. This signal is transmitted to earth on a 137MHz radio wave.
 
             </div>
 
-            <div class="f1">
-
-                <div class="break">
-
-                </div>
+            <div class="f_content">
 
                 <h2>Instructions</h2>
                 <div class="indent">
@@ -65,12 +73,19 @@
 
                 </div>
 
-                <div class="break">
-
-                </div>
             </div>
 
-            <div class="f1">
+        </div>
+        <div class="flex">
+
+            <div class="f_note">
+                Using an antenna and software defined radio, we can record the signal transmitted by the satellite. This recording, in the form of a WAV file, can be decoded into an image using the tools on this site. Here is a sample WAV.
+                <br><br>
+                Absolute Value, Cosine and Hilbert/FFT are three ways to decode the WAV file. Histogram Equalisation increases the contrast of the image.
+
+            </div>
+
+            <div class="f_content">
 
                 <div class="indent">
 
@@ -95,11 +110,17 @@
 
             </div>
 
-            <div class="f1">
+        </div>
+        <div class="flex">
 
-                <div class="break">
+            <div class="f_note">
+                open-weather apt emerged from a need for an accessible online decoder for new practitioners during DIY Satellite Ground Station workshops.
+                <br><br>open-weather apt is forked from Thatcher’s APT 3000. It is a collaboration between open-weather, Bill Liles NQ6Z and Grayson Earle.
 
-                </div>
+            </div>
+
+            <div class="f_content">
+
 
                 <div class="indent">
 
@@ -112,30 +133,33 @@
                     Loading…
                 </div>
 
-                <div class="break">
-                </div>
+            </div>
+        </div>
 
-                <div class="divider">
-                </div>
 
+
+        <div class="divider">
+        </div>
+
+        <div class="flex">
+
+            <div class="f_note">
+                Instructions go here. Or, pedagogical information to guide the participant through the process.
             </div>
 
-
-            <div class="f1">
-
-                <div class="break">
-                </div>
+            <div class="f_content">
 
                 <input class="view_buttons" value="View A" type="button" onclick="viewA()">
                 <input class="view_buttons" value="View B" type="button" onclick="viewB()">
                 <input class="view_buttons" value="View AB" type="button" onclick="viewAB()">
-
 
                 <div class="col-md-3">
                     <div class="alert-small alert-danger" role="alert" id="alert"></div>
                 </div>
             </div>
 
+        </div>
+        <div class="flex">
 
             <!-- MAIN CANVAS -->
             <div class="f1">
@@ -180,14 +204,11 @@
                 <canvas id="myChart" style="width:100%;" width="1040" height="400"></canvas>
 
             </div>
-
-
-
         </div>
-
     </div>
 
 
+    
 
     <script src='new.js'></script>
 </body>

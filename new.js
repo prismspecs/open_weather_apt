@@ -11,6 +11,7 @@ var normalizedData;
 var imageCanvas = document.getElementById("output");
 var imageCTX = imageCanvas.getContext("2d");
 
+
 window.onload = function() {
 
 	document.getElementById('spinner').style.visibility = 'hidden';
@@ -74,6 +75,15 @@ function start() {
 					break;
 
 				case "hilbertfft":
+
+					// console.log(wavFile.dataSamples.length);
+					var paddedWavFile = padArrayFFT(wavFile.dataSamples);
+					// console.log(paddedWavFile.length);
+
+					var IQdata = HilbertFFT(paddedWavFile);
+					IQdata.length = wavFile.dataSamples.length*2;
+
+					wavData = envelopeDetection(IQdata);
 
 					break;
 			}
@@ -148,6 +158,106 @@ function demodHilbert(input) {
 
 	return data;
 }
+
+
+
+
+function HilbertFFT(data) {
+	// computes the IQ valies for the real data input
+	// returns the IQ values in an array with even number
+	// elements being the I value and the odd number elements
+	// being the Q value.
+	// for example out[0] = 1st I value
+	//             out[1] = 2nd Q value
+	// this uses the fft code from
+	//  https://github.com/indutny/fft.js/
+	//const FFT = require('/Users/williamliles/fftjs/lib/fft.js');
+	// note that data lenght must be equal to a power of 2
+	// an erro check should be put here
+	len = data.length;
+	const f = new FFT(len);
+	const input = new Array(len);
+	out = f.createComplexArray();
+	cpxData = f.createComplexArray();
+	f.realTransform(out, data);
+	// set negative frequencies to zero
+	// stNegFreq is where the negative freqs start in out
+	// recall that out and cpxData are arrays of twice the input
+	// data array since the values are now complex
+	// the 0 Hz complex freqa are in out[0] and out[1]
+	// the positive freqs are from out[2] and out[3] up to and
+	// including out[len-2] and out[len-1]
+	// skip over out[len] and out[len+1]
+	// the negative frequeices start at out[len+2] and oit[len+3)
+	// and end at out[2*len-2] and out[2*len-1]
+	// these negative frequcies are set to zero
+	var stNegFreq = len + 2;
+	for (ii = stNegFreq; ii < len * 2; ++ii) {
+		out[ii] = 0;
+	}
+	// double magnitude of real frequency values
+	// since the negative freqs wer set to zero we must recover the
+	// energy in them by doubling the magnitude of the positive
+	// frequency values
+	for (ii = 2; ii < len; ++ii) {
+		out[ii] *= 2.0;
+	}
+	// compute inverse fft
+	f.inverseTransform(cpxData, out);
+	return cpxData;
+
+}
+
+function envelopeDetection(data) {
+
+	var amp = [];
+
+	for (var ii = 0; ii < Math.floor(data.length / 2); ii++) {
+		amp[ii] = Math.sqrt(data[2 * ii] ** 2 + data[2 * ii + 1] ** 2);
+	}
+
+	console.log("amp length is " + amp.length);
+
+	return amp;
+
+}
+
+// HilbertFFT needs an array of size that is a power of 2
+// so add some zeroes
+function padArrayFFT(data) {
+
+	var newData = [...data];
+
+	// console.log("newData length is " + newData.length);
+
+	var newLength = nearestUpperPow2(newData.length);
+
+	console.log("nearest pow2 is " + newLength);
+
+	var diff = newLength - newData.length;
+
+	// console.log("diff is " + diff);
+
+	for(var i = 0; i < diff; i++) {
+		newData.push(0);
+	}
+
+	return newData;
+}
+
+function nearestUpperPow2(v) {
+	v--;
+	v |= v >> 1;
+	v |= v >> 2;
+	v |= v >> 4;
+	v |= v >> 8;
+	v |= v >> 16;
+	return ++v;
+}
+
+
+
+
 
 
 function filterSamples(input) {
@@ -286,7 +396,55 @@ function createImage(startingIndex, pixelScale, pixelStart) {
 }
 
 
+function createImageAB(startingIndex) {
+
+	// reveal controls for saving image etc
+	$(".image_buttons").show();
+
+	lineCount = Math.floor(normalizedData.length / 5513);
+
+	imageCanvas.width = 2080;
+	imageCanvas.height = lineCount;
+
+	var image = imageCTX.createImageData(2080, lineCount);
+
+	var lineStartIndex = startingIndex;
+
+	var downSampler = new Downsampler(11025, 4160, coeffs);
+	var thisLineData;
+
+	//each line
+	for (var line = 0; line < lineCount; line++) {
+		//each column, currently only Channel A
+
+		thisLineData = downSampler.downsample(normalizedData.slice(lineStartIndex + 20, lineStartIndex + 5533));
+
+		for (var column = 0; column < 2080; column++) {
+			var value = thisLineData[column] * 255;
+			//R=G=B for grayscale
+			image.data[line * 2080 * 4 + column * 4] = value;
+			image.data[line * 2080 * 4 + column * 4 + 1] = value;
+			image.data[line * 2080 * 4 + column * 4 + 2] = value;
+			//alpha = 255
+			image.data[line * 2080 * 4 + column * 4 + 3] = 255;
+		}
+
+		// updating lineStartIndex to equal the start of the next
+		// line helps straighten the image
+		var conv = convolveWithSync(lineStartIndex + (5512) - 20, 40);
+		// if the convolution actually found something, use that
+		if (conv.score > 6) {
+			lineStartIndex = conv.index;
+		} else { // otherwise, just guess the next line
+			lineStartIndex += 5512;
+		}
+	}
+	imageCTX.putImageData(image, 0, 0);
+}
+
+
 function convolveWithSync(start, range) {
+	// the seven white/black lines in the image are the sync lines
 	var sync = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1];
 	var maxVal = 0;
 	var maxIndex = 0;
@@ -307,6 +465,12 @@ function convolveWithSync(start, range) {
 }
 
 function histogramEqualization() {
+
+	// set up proper canvas sizing
+	// $("#equalized").width = imageCanvas.width;
+	// $("#equalized").height = imageCanvas.height;
+	//
+
 	let imgElement = document.getElementById("output");
 	let src = cv.imread(imgElement);
 	let dst = new cv.Mat();
@@ -467,21 +631,24 @@ function ifft_cpx(xr, xi) {
 
 
 function viewA() {
+	imageCanvas.width = 1040;
 	var pixelScale = 1;
 	var pixelStart = 0;
 	createImage(convolveWithSync(0, 22050).index, pixelScale, pixelStart);
 }
 
 function viewB() {
+	imageCanvas.width = 1040;
 	var pixelScale = 1;
 	var pixelStart = 1040;
 	createImage(convolveWithSync(0, 22050).index, pixelScale, pixelStart);
 }
 
 function viewAB() {
-	var pixelScale = 2;
+	imageCanvas.width = 2080;
+	var pixelScale = 1;
 	var pixelStart = 0;
-	createImage(convolveWithSync(0, 22050).index, pixelScale, pixelStart);
+	createImageAB(convolveWithSync(0, 22050).index);
 }
 
 
