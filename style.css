@@ -65,7 +65,7 @@ canvas {
 }
 
 .f_note {
-    flex-basis:25%;
+    flex-basis:48%;
     flex-shrink: 0;
     flex-grow: 0;
     color:#fff;
@@ -73,7 +73,7 @@ canvas {
     padding:1rem;
 }
 .f_content {
-    flex-basis:70%;
+    flex-basis:48%;
     flex-shrink: 0;
     flex-grow: 0;
 }
@@ -144,5 +144,8 @@ a {
         left:5%;
         /* height:40%; */
         top:30%;
+    }
+    .f_note, .f_content {
+        flex-basis:100%;
     }
 }
