@@ -382,14 +382,16 @@ function createImage(startingIndex, pixelScale, pixelStart) {
 			//alpha = 255
 			image.data[line * 1040 * 4 + column * 4 + 3] = 255;
 		}
-		//updating lineStartIndex to equal the start of the next
-		//line helps straighten the image
+
+		// updating lineStartIndex to equal the start of the next
+		// line helps straighten the image
 		var conv = convolveWithSync(lineStartIndex + (5512 * pixelScale) - 20, 40);
-		//If the convolution actually found something, use that
+
+		// if the convolution actually found something, use that
 		if (conv.score > 6) {
 			lineStartIndex = conv.index;
-		} else { //otherwise, just guess the next line
-			lineStartIndex += 5512 * pixelScale;
+		} else { // otherwise, just move to the next line as it is received
+			lineStartIndex += 5512;
 		}
 	}
 	imageCTX.putImageData(image, 0, 0);
@@ -431,8 +433,9 @@ function createImageAB(startingIndex) {
 
 		// updating lineStartIndex to equal the start of the next
 		// line helps straighten the image
-		var conv = convolveWithSync(lineStartIndex + (5512) - 20, 40);
+		var conv = convolveWithSync(lineStartIndex + (5512) - 40, 80);
 		// if the convolution actually found something, use that
+		// maybe adjust this
 		if (conv.score > 6) {
 			lineStartIndex = conv.index;
 		} else { // otherwise, just guess the next line
@@ -448,6 +451,7 @@ function convolveWithSync(start, range) {
 	var sync = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1];
 	var maxVal = 0;
 	var maxIndex = 0;
+
 	for (var i = start; i < start + range; i++) {
 		sum = 0;
 		for (var c = 0; c < sync.length; c++) {
@@ -458,6 +462,7 @@ function convolveWithSync(start, range) {
 			maxIndex = i;
 		}
 	}
+
 	return {
 		"index": maxIndex,
 		"score": maxVal

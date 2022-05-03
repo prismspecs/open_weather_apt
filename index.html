@@ -1,216 +1,225 @@
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="wav.js"></script>
-    <script src="dsp.js"></script>
-    <script src="fft.js"></script>
+  <script src="wav.js"></script>
+  <script src="dsp.js"></script>
+  <script src="fft.js"></script>
 
-    <script src="fileSaver.js"></script>
-    <script src="opencv.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
+  <script src="fileSaver.js"></script>
+  <script src="opencv.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
-    <link href="reset.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
 
-    <title>open weather apt</title>
+
+  <link href="reset.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+
+  <title>open weather apt</title>
 
 </head>
 
 <body>
 
-    <div class="error_outer">
+  <div class="error_outer">
 
-        <div class="error_inner">
+    <div class="error_inner">
 
-            <div class="text">
+      <div class="text">
 
-            </div>
+      </div>
 
-            <button type="button" name="button" onclick="$('.error_outer').fadeOut()">Okay</button>
+      <button type="button" name="button" onclick="$('.error_outer').fadeOut()">Okay</button>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="container">
+
+    <div class="navbar">
+      <h1>open-weather apt</h1>
+    </div>
+
+
+    <div class="flex">
+
+      <div class="f_note">
+        open-weather apt is a browser based decoder for NOAA satellite images.
+      </div>
+
+      <div class="f_content">
+
+        <h2>Instructions</h2>
+        <div class="indent">
+
+          <p>1. Select a WAV file from your computer (<a href="https://dropbox.com/s/xif376sqn09bps9/20210720111842.wav" target="_blank">here is a sample</a>)</p>
+
+          <input class="browse" type="file" id="fileInput" value="Open WAV file">
+          <em><input type="text" class="form-control" id="fileName" style="opacity:0;" readonly></em>
 
         </div>
 
+      </div>
+
+    </div>
+    <div class="flex">
+
+      <div class="f_note">
+        It was developed to improve accessibility of satellite signal decoding for new practitioners across operating systems. Learn more <a
+          href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images">here</a>.
+      </div>
+
+      <div class="f_content">
+
+        <div class="indent">
+
+
+          <p>2. Select a demodulation method</p>
+
+          <div>
+            <input type="radio" id="abs" name="demod_mode" value="abs" checked>
+            <label for="abs">Absolute Value</label>
+          </div>
+
+          <div>
+            <input type="radio" id="cos" name="demod_mode" value="cos">
+            <label for="cos">Cosine</label>
+          </div>
+
+          <div>
+            <input type="radio" id="hilbertfft" name="demod_mode" value="hilbertfft">
+            <label for="hilbertfft">HilbertFFT</label>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="flex">
+
+      <div class="f_note">
+        open-weather apt is forked from Thatcher’s <a href="https://jthatch.com/APT3000/APT3000.html">APT 3000</a>. It is a collaboration between <a href="https://open-weather.community/">open-weather</a>, Bill Liles NQ6Z and Grayson Earle.
+      </div>
+
+      <div class="f_content">
+
+
+        <div class="indent">
+
+          <p>3. Create!</p>
+
+          <button onclick="start()">Create Image</button>
+        </div>
+
+        <div class="spinner-loader indent" id="spinner" style="visibility:hidden">
+          Loading…
+        </div>
+
+      </div>
     </div>
 
 
 
-
-
-    <div class="container">
-
-        <div class="navbar">
-            <h1>open-weather apt</h1>
-        </div>
-
-
-        <div class="flex">
-
-            <div class="f_note">
-                open-weather apt is a browser based decoder for NOAA satellite images. <br><br>
-                NOAA satellites sense earth’s surface using visible light and infrared sensors. The data from these sensors is combined to produce images.
-                <br><br>
-                The satellites encode image data into a 2500 Hz signal. This signal is transmitted to earth on a 137MHz radio wave.
-
-            </div>
-
-            <div class="f_content">
-
-                <h2>Instructions</h2>
-                <div class="indent">
-
-                    <p>1. Select a WAV file from your computer</p>
-
-                    <input class="browse" type="file" id="fileInput" value="Open WAV file">
-                    <em><input type="text" class="form-control" id="fileName" style="opacity:0;" readonly></em>
-
-                </div>
-
-            </div>
-
-        </div>
-        <div class="flex">
-
-            <div class="f_note">
-                Using an antenna and software defined radio, we can record the signal transmitted by the satellite. This recording, in the form of a WAV file, can be decoded into an image using the tools on this site. Here is a sample WAV.
-                <br><br>
-                Absolute Value, Cosine and Hilbert/FFT are three ways to decode the WAV file. Histogram Equalisation increases the contrast of the image.
-
-            </div>
-
-            <div class="f_content">
-
-                <div class="indent">
-
-
-                    <p>2. Select a demodulation method</p>
-
-                    <div>
-                        <input type="radio" id="abs" name="demod_mode" value="abs" checked>
-                        <label for="abs">Absolute Value</label>
-                    </div>
-
-                    <div>
-                        <input type="radio" id="cos" name="demod_mode" value="cos">
-                        <label for="cos">Cosine</label>
-                    </div>
-
-                    <div>
-                        <input type="radio" id="hilbertfft" name="demod_mode" value="hilbertfft">
-                        <label for="hilbertfft">HilbertFFT</label>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-        <div class="flex">
-
-            <div class="f_note">
-                open-weather apt emerged from a need for an accessible online decoder for new practitioners during DIY Satellite Ground Station workshops.
-                <br><br>open-weather apt is forked from Thatcher’s APT 3000. It is a collaboration between open-weather, Bill Liles NQ6Z and Grayson Earle.
-
-            </div>
-
-            <div class="f_content">
-
-
-                <div class="indent">
-
-                    <p>3. Create!</p>
-
-                    <button onclick="start()">Create Image</button>
-                </div>
-
-                <div class="spinner-loader indent" id="spinner" style="visibility:hidden">
-                    Loading…
-                </div>
-
-            </div>
-        </div>
-
-
-
-        <div class="divider">
-        </div>
-
-        <div class="flex">
-
-            <div class="f_note">
-                Instructions go here. Or, pedagogical information to guide the participant through the process.
-            </div>
-
-            <div class="f_content">
-
-                <input class="view_buttons" value="View A" type="button" onclick="viewA()">
-                <input class="view_buttons" value="View B" type="button" onclick="viewB()">
-                <input class="view_buttons" value="View AB" type="button" onclick="viewAB()">
-
-                <div class="col-md-3">
-                    <div class="alert-small alert-danger" role="alert" id="alert"></div>
-                </div>
-            </div>
-
-        </div>
-        <div class="flex">
-
-            <!-- MAIN CANVAS -->
-            <div class="f1">
-                <canvas id="output" width="1040" height="400" style="padding-top:5"></canvas>
-                <button class="image_buttons" id="download_output" onclick="">Save Image</button>
-                <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Histogram Equalize Image</button>
-
-                <script>
-                    var output_canvas = document.getElementById("output");
-                    var download_output = document.getElementById('download_output');
-                    download_output.onclick = function(e) {
-                        // draw to canvas...
-                        output_canvas.toBlob(function(blob) {
-                            saveAs(blob, "apt.png");
-                        });
-                    };
-                </script>
-
-            </div>
-
-
-            <!-- HISTOGRAM EQUALIZED CANVAS -->
-            <div class="f1">
-                <canvas id="equalized" width="1040" height="400" style="padding-top:5"></canvas>
-                <button class="histo_buttons" id="download_equalized" onclick="">Save Equalized Image</button>
-
-                <script>
-                    var equalized_canvas = document.getElementById("equalized");
-                    var download_equalized = document.getElementById('download_equalized');
-                    download_equalized.onclick = function(e) {
-                        // draw to canvas...
-                        equalized_canvas.toBlob(function(blob) {
-                            saveAs(blob, "apt.png");
-                        });
-                    };
-                </script>
-
-            </div>
-
-            <div class="f1">
-
-                <canvas id="myChart" style="width:100%;" width="1040" height="400"></canvas>
-
-            </div>
-        </div>
+    <div class="divider">
     </div>
 
+    <div class="flex">
 
-    
 
-    <script src='new.js'></script>
+
+      <div class="f1">
+
+        <input class="view_buttons" value="View A" type="button" onclick="viewA()">
+        <input class="view_buttons" value="View B" type="button" onclick="viewB()">
+        <input class="view_buttons" value="View AB" type="button" onclick="viewAB()">
+
+        <div class="col-md-3">
+          <div class="alert-small alert-danger" role="alert" id="alert"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="flex">
+
+      <!-- MAIN CANVAS -->
+      <div class="f1">
+        <canvas id="output" width="1040" height="400"></canvas>
+      </div>
+
+    </div>
+
+    <div class="flex">
+
+      <div class="f1">
+
+
+
+        <button class="image_buttons" id="download_output" onclick="">Save Image</button>
+        <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Histogram Equalize Image</button>
+
+        <script>
+          var output_canvas = document.getElementById("output");
+          var download_output = document.getElementById('download_output');
+          download_output.onclick = function(e) {
+            // draw to canvas...
+            output_canvas.toBlob(function(blob) {
+              saveAs(blob, "apt.png");
+            });
+          };
+        </script>
+
+      </div>
+    </div>
+
+    <div class="flex">
+
+
+      <!-- HISTOGRAM EQUALIZED CANVAS -->
+      <div class="f1">
+        <canvas id="equalized" width="1040" height="400"></canvas>
+      </div>
+
+    </div>
+
+    <div class="flex">
+      <div class="f1">
+        <button class="histo_buttons" id="download_equalized" onclick="">Save Equalized Image</button>
+
+        <script>
+          var equalized_canvas = document.getElementById("equalized");
+          var download_equalized = document.getElementById('download_equalized');
+          download_equalized.onclick = function(e) {
+            // draw to canvas...
+            equalized_canvas.toBlob(function(blob) {
+              saveAs(blob, "apt.png");
+            });
+          };
+        </script>
+
+      </div>
+
+      <div class="f1">
+
+        <canvas id="myChart" style="width:100%;" width="1040" height="400"></canvas>
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script src='new.js'></script>
 </body>
 
 </html>
