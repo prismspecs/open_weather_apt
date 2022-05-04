@@ -18,9 +18,7 @@ A browser-based APT decoder for NOAA satellites based on [ThatcherC's github rep
 + Saving processed images
 + Adding some text by the Open Weather team about what the steps mean and what is happening in the decoding process (so people understand why it matters to change the demod method, why the sync can be searched for in different places, etc).
 + Automatic resampling (from 44100)
-+ Add some color
-+ Add some pedagogical text to the side
-    + a block of green
++ Allow user to specify the time at which the program starts looking for the sync signal (to cut off the heavy noise in the beginning of transmission)
 
 ## Works Cited
 

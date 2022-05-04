@@ -8,8 +8,8 @@ var filter = new FIRFilter(coeffs);
 var signalMean;
 var normalizedData;
 
-var imageCanvas = document.getElementById("output");
-var imageCTX = imageCanvas.getContext("2d");
+// var imageCanvas = document.getElementById("output");
+// var imageCTX = imageCanvas.getContext("2d");
 
 
 window.onload = function() {
@@ -350,65 +350,29 @@ function chartArray(input, resolution) {
 
 
 
-//starting index comes from convolution, lineCount comes from math
-//this kind of comes from https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
-function createImage(startingIndex, pixelScale, pixelStart) {
 
-	// reveal controls for saving image etc
-	$(".image_buttons").show();
-
-	lineCount = Math.floor(normalizedData.length / 5513) / pixelScale;
-	imageCanvas.height = lineCount;
-	var image = imageCTX.createImageData(1040, lineCount);
-
-	var lineStartIndex = startingIndex;
-	console.log(lineCount + " possible lines");
-
-	var downSampler = new Downsampler(11025, 4160, coeffs);
-	var thisLineData;
-
-	//each line
-	for (var line = 0; line < lineCount; line++) {
-		//each column, currently only Channel A
-
-		thisLineData = downSampler.downsample(normalizedData.slice(lineStartIndex + 20, lineStartIndex + 5533));
-
-		for (var column = 0; column < 1040; column++) {
-			var value = thisLineData[pixelStart + column * pixelScale] * 255;
-			//R=G=B for grayscale
-			image.data[line * 1040 * 4 + column * 4] = value;
-			image.data[line * 1040 * 4 + column * 4 + 1] = value;
-			image.data[line * 1040 * 4 + column * 4 + 2] = value;
-			//alpha = 255
-			image.data[line * 1040 * 4 + column * 4 + 3] = 255;
-		}
-
-		// updating lineStartIndex to equal the start of the next
-		// line helps straighten the image
-		var conv = convolveWithSync(lineStartIndex + (5512 * pixelScale) - 20, 40);
-
-		// if the convolution actually found something, use that
-		if (conv.score > 6) {
-			lineStartIndex = conv.index;
-		} else { // otherwise, just move to the next line as it is received
-			lineStartIndex += 5512;
-		}
-	}
-	imageCTX.putImageData(image, 0, 0);
-}
-
-
-function createImageAB(startingIndex) {
-
+function createImage(startingIndex, pixelStart, imgWidth) {
+	
 	// reveal controls for saving image etc
 	$(".image_buttons").show();
 
 	lineCount = Math.floor(normalizedData.length / 5513);
 
-	imageCanvas.width = 2080;
-	imageCanvas.height = lineCount;
+	// canvas stuff. it's important it has the right number of pixels in the actual canvas
+	// but then adjust the style as necessary
+	var canvas = document.getElementById("output");
+	canvas.width = imgWidth;
+	canvas.height = lineCount;
+	// canvas.style.width = "100%";
+	// var r = lineCount/imgWidth;
+	// var h = r * canvas.style.width;
+	// canvas.style.height = h;
 
-	var image = imageCTX.createImageData(2080, lineCount);
+	var imageCanvas = document.getElementById("output");
+	var imageCTX = imageCanvas.getContext("2d");
+
+	var image = imageCTX.createImageData(imgWidth, lineCount);
+
 
 	var lineStartIndex = startingIndex;
 
@@ -421,14 +385,14 @@ function createImageAB(startingIndex) {
 
 		thisLineData = downSampler.downsample(normalizedData.slice(lineStartIndex + 20, lineStartIndex + 5533));
 
-		for (var column = 0; column < 2080; column++) {
-			var value = thisLineData[column] * 255;
+		for (var column = 0; column < imgWidth; column++) {
+			var value = thisLineData[pixelStart + column] * 255;
 			//R=G=B for grayscale
-			image.data[line * 2080 * 4 + column * 4] = value;
-			image.data[line * 2080 * 4 + column * 4 + 1] = value;
-			image.data[line * 2080 * 4 + column * 4 + 2] = value;
+			image.data[line * imgWidth * 4 + column * 4] = value;
+			image.data[line * imgWidth * 4 + column * 4 + 1] = value;
+			image.data[line * imgWidth * 4 + column * 4 + 2] = value;
 			//alpha = 255
-			image.data[line * 2080 * 4 + column * 4 + 3] = 255;
+			image.data[line * imgWidth * 4 + column * 4 + 3] = 255;
 		}
 
 		// updating lineStartIndex to equal the start of the next
@@ -436,13 +400,14 @@ function createImageAB(startingIndex) {
 		var conv = convolveWithSync(lineStartIndex + (5512) - 40, 80);
 		// if the convolution actually found something, use that
 		// maybe adjust this
-		if (conv.score > 6) {
+		if (conv.score > 5) {
 			lineStartIndex = conv.index;
 		} else { // otherwise, just guess the next line
 			lineStartIndex += 5512;
 		}
 	}
 	imageCTX.putImageData(image, 0, 0);
+
 }
 
 
@@ -636,24 +601,19 @@ function ifft_cpx(xr, xi) {
 
 
 function viewA() {
-	imageCanvas.width = 1040;
-	var pixelScale = 1;
 	var pixelStart = 0;
-	createImage(convolveWithSync(0, 22050).index, pixelScale, pixelStart);
+	createImage(convolveWithSync(0, 22050).index, pixelStart, 1040);
 }
 
 function viewB() {
-	imageCanvas.width = 1040;
-	var pixelScale = 1;
 	var pixelStart = 1040;
-	createImage(convolveWithSync(0, 22050).index, pixelScale, pixelStart);
+	createImage(convolveWithSync(0, 22050).index, pixelStart, 1040);
 }
 
 function viewAB() {
-	imageCanvas.width = 2080;
 	var pixelScale = 1;
 	var pixelStart = 0;
-	createImageAB(convolveWithSync(0, 22050).index);
+	createImage(convolveWithSync(0, 22050).index, 0, 2080);
 }
 
 

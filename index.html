@@ -48,6 +48,9 @@
 
     <div class="navbar">
       <h1>open-weather apt</h1>
+      <ul class="nav-items">
+          <li><a href="#">about</a></li>
+      </ul>
     </div>
 
 
@@ -152,8 +155,8 @@
     <div class="flex">
 
       <!-- MAIN CANVAS -->
-      <div class="f1">
-        <canvas id="output" width="1040" height="400"></canvas>
+      <div class="f1 output_container">
+        <canvas id="output"></canvas>
       </div>
 
     </div>
@@ -168,9 +171,10 @@
         <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Histogram Equalize Image</button>
 
         <script>
-          var output_canvas = document.getElementById("output");
+
           var download_output = document.getElementById('download_output');
           download_output.onclick = function(e) {
+            var output_canvas = document.getElementById("output");
             // draw to canvas...
             output_canvas.toBlob(function(blob) {
               saveAs(blob, "apt.png");
