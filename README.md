@@ -24,6 +24,6 @@ A browser-based APT decoder for NOAA satellites based on [ThatcherC's github rep
 
 *(helpful pages from around the web thanks to ThatcherC)*:
 - http://www.ncdc.noaa.gov/oa/pod-guide/ncdc/docs/klm/html/c4/sec4-2.htm
-- http://markroland.com/project/weather-satellite-imaging/APT_decode.m
+- https://project.markroland.com/weather-satellite-imaging/APT_decode.m
 - https://github.com/ffdead/wav.js/blob/master/wav.js
 - https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas

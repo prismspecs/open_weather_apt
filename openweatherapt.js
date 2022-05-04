@@ -12,6 +12,8 @@ var normalizedData;
 // var imageCTX = imageCanvas.getContext("2d");
 
 
+var lastViewOption = "AB";
+
 window.onload = function() {
 
 	document.getElementById('spinner').style.visibility = 'hidden';
@@ -81,7 +83,7 @@ function start() {
 					// console.log(paddedWavFile.length);
 
 					var IQdata = HilbertFFT(paddedWavFile);
-					IQdata.length = wavFile.dataSamples.length*2;
+					IQdata.length = wavFile.dataSamples.length * 2;
 
 					wavData = envelopeDetection(IQdata);
 
@@ -238,7 +240,7 @@ function padArrayFFT(data) {
 
 	// console.log("diff is " + diff);
 
-	for(var i = 0; i < diff; i++) {
+	for (var i = 0; i < diff; i++) {
 		newData.push(0);
 	}
 
@@ -352,11 +354,15 @@ function chartArray(input, resolution) {
 
 
 function createImage(startingIndex, pixelStart, imgWidth) {
-	
+
 	// reveal controls for saving image etc
 	$(".image_buttons").show();
 
 	lineCount = Math.floor(normalizedData.length / 5513);
+
+	// we can also adjust the lineCount to account for the syncStart offset
+	// to get rid of the blank/black pixel section at the bottom of the image that results
+	lineCount -= Math.floor(syncStart / 5513);
 
 	// canvas stuff. it's important it has the right number of pixels in the actual canvas
 	// but then adjust the style as necessary
@@ -413,7 +419,12 @@ function createImage(startingIndex, pixelStart, imgWidth) {
 
 function convolveWithSync(start, range) {
 	// the seven white/black lines in the image are the sync lines
-	var sync = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1];
+	//var sync = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1];
+
+	// newer, longer sync
+	var sync = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+
+
 	var maxVal = 0;
 	var maxIndex = 0;
 
@@ -597,26 +608,69 @@ function ifft_cpx(xr, xi) {
 
 
 
+$('#sync_after').on('input', function() {
+	// do something
+	switch (lastViewOption) {
+		case "A":
+			viewA();
+			break;
+		case "B":
+			viewB();
+			break;
+		case "AB":
+			viewAB();
+			break;
+	}
+});
+
+function calcSyncStart() {
+	var secs = $("#sync_after").val();
+
+	// what does that mean in bits of info received?
+	// each bit is 0.00024 seconds so multi by 4166.67... i think
+	var words = secs * 4166;
+
+	return words;
+}
 
 
+
+var syncStart = 0;
 
 function viewA() {
 	var pixelStart = 0;
-	createImage(convolveWithSync(0, 22050).index, pixelStart, 1040);
+	syncStart = calcSyncStart();
+	createImage(convolveWithSync(syncStart, 22050).index, pixelStart, 1040);
+
+	lastViewOption = "A";
 }
 
 function viewB() {
 	var pixelStart = 1040;
-	createImage(convolveWithSync(0, 22050).index, pixelStart, 1040);
+	syncStart = calcSyncStart();
+	createImage(convolveWithSync(syncStart, 22050).index, pixelStart, 1040);
+
+	lastViewOption = "B";
 }
 
 function viewAB() {
-	var pixelScale = 1;
 	var pixelStart = 0;
-	createImage(convolveWithSync(0, 22050).index, 0, 2080);
+	syncStart = calcSyncStart();
+	createImage(convolveWithSync(syncStart, 22050).index, 0, 2080);
+
+	lastViewOption = "AB";
 }
 
 
 function map(inputNum, inputMin, inputMax, outputMin, outputMax) {
 	return outputMin + (inputNum - inputMin) * (outputMax - outputMin) / (inputMax - inputMin);
+}
+
+
+
+
+function colorChange() {
+	var randomColor = "#" + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
+	console.log(randomColor);
+	$("body").get(0).style.setProperty("--main", randomColor);
 }
