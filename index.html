@@ -80,8 +80,7 @@
         <div class="flex">
 
             <div class="f_note">
-                It was developed to improve accessibility of satellite signal decoding for new practitioners across operating systems. Learn more <a
-                    href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images">here</a>.
+                It was developed to improve accessibility of satellite signal decoding for new practitioners across operating systems.
             </div>
 
             <div class="f_content">
@@ -178,8 +177,15 @@
 
                 <script>
                     var download_output = document.getElementById('download_output');
+
                     download_output.onclick = function(e) {
+                        
                         var output_canvas = document.getElementById("output");
+
+                        // maybe give it a better save as date string
+                        // var dateString = new Date();
+                        // var time = today.getMonth()+1 + "-" + today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
+
                         // draw to canvas...
                         output_canvas.toBlob(function(blob) {
                             saveAs(blob, "apt.png");

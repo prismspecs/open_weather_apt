@@ -1,8 +1,7 @@
 :root {
-  --main: #00aa6e;
-  --background: #ffffff;
+    --main: #00aa6e;
+    --background: #ffffff;
 }
-
 
 body {
     font-family: 'Roboto', serif;
@@ -153,5 +152,17 @@ a {
 
     .f_note, .f_content {
         flex-basis: 100%;
+    }
+
+    .nav-items {
+        float: unset;
+        margin-top: 1rem;
+    }
+
+    .nav-items li {
+        display: unset;
+        margin-left: unset;
+        margin-right:1rem;
+
     }
 }

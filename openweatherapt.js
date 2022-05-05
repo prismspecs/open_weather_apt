@@ -63,6 +63,26 @@ function start() {
 			document.getElementById('alert').style.visibility = 'visible';
 			document.getElementById('spinner').style.visibility = 'hidden';
 
+			console.log("sample rate is currently " + wavFile.sampleRate);
+
+
+			// experimenting...
+
+			console.log(wavFile.dataSamples);
+			wavData = wavToArray(wavFile);
+			var downSampledData = changeSampleRate(wavData, 48000, 11025);
+
+			var filtered = filterSamples(downSampledData);
+			// console.log(filtered);
+
+			// normalize
+			normalizedData = new Float32Array(wavData.length);
+			var normalized_mean = normalizeData(filtered);
+			normalizedData = normalized_mean[0];
+			signalMean = normalized_mean[1];
+
+
+
 		} else {
 
 			var demod_mode = document.querySelector('input[name="demod_mode"]:checked').value;
@@ -116,6 +136,48 @@ function start() {
 		}
 	};
 }
+
+
+
+// experimenting...
+function wavToArray(input) {
+
+	console.log(input);
+
+	var data = [];
+
+	for (var i = 0; i < input.dataSamples.length; i++) {
+		data[i] = input.dataSamples[i];
+	}
+
+	return data;
+
+}
+
+
+
+function changeSampleRate(input, input_rate, output_rate) {
+
+	var data = [];
+
+	// ex: 11025 / 48000 = 0.2296875
+
+	// given the existing file at the current rate
+	// figure out the desired length of the new array
+	var ratio = output_rate / input_rate;
+	var newLength = Math.floor(input.dataSamples.length * ratio);
+
+	for (var i = 0; i < newLength; i++) {
+
+		var x = Math.floor(map(i, 0, newLength, 0, input.dataSamples.length));
+
+		data.push(input[x]);
+	}
+
+	return data;
+}
+
+
 
 
 function demodAbs(input) {
@@ -671,6 +733,6 @@ function map(inputNum, inputMin, inputMax, outputMin, outputMax) {
 
 function colorChange() {
 	var randomColor = "#" + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
-	console.log(randomColor);
+	// console.log(randomColor);
 	$("body").get(0).style.setProperty("--main", randomColor);
 }
