@@ -59,7 +59,7 @@ function start() {
 
 		if (wavFile.sampleRate != 11025) {
 
-			document.getElementById('alert').innerHTML = "File must have a 11025Hz sample rate";
+			document.getElementById('alert').innerHTML = "File must have a 11025Hz sample rate, please look at <a href='https://leshamilton.co.uk/ssguide.htm'>this guide</a> for a more detailed explanation.";
 			document.getElementById('alert').style.visibility = 'visible';
 			document.getElementById('spinner').style.visibility = 'hidden';
 
@@ -732,7 +732,14 @@ function map(inputNum, inputMin, inputMax, outputMin, outputMax) {
 
 
 function colorChange() {
-	var randomColor = "#" + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
+	//var randomColor = "#" + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
 	// console.log(randomColor);
-	$("body").get(0).style.setProperty("--main", randomColor);
+
+	// HSL
+	const hue = Math.floor(Math.random() * 360);
+	const saturation = Math.floor(Math.random() * (100 + 1)) + "%";
+	const lightness = Math.floor(Math.random() * 45) + "%";
+	var hslCol = "hsl(" + hue + ", " + saturation + ", " + lightness + ")";
+
+	$("body").get(0).style.setProperty("--main", hslCol);
 }

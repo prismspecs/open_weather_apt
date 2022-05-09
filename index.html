@@ -69,8 +69,8 @@
 
                     <p>1. Select a WAV file from your computer (<a href="https://dropbox.com/s/xif376sqn09bps9/20210720111842.wav" target="_blank">here is a sample</a>)</p>
 
-                    <input class="browse" type="file" id="fileInput" value="Open WAV file">
-                    <em><input type="text" class="form-control" id="fileName" style="opacity:0;" readonly></em>
+                    <input class="browse" type="file" id="fileInput" value="Open WAV file" autocomplete="off">
+                    <em><input type="text" class="form-control" id="fileName" style="opacity:0;" readonly autocomplete="off"></em>
 
                 </div>
 
@@ -179,7 +179,7 @@
                     var download_output = document.getElementById('download_output');
 
                     download_output.onclick = function(e) {
-                        
+
                         var output_canvas = document.getElementById("output");
 
                         // maybe give it a better save as date string
