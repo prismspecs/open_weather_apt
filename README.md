@@ -2,23 +2,11 @@
 
 ----------
 
-A browser-based APT decoder for NOAA satellites based on [ThatcherC's github repo](https://github.com/ThatcherC/APT3000), modified to meet the needs of Open Weather. Contributions from ...
+A browser-based APT decoder for NOAA satellites forked from [ThatcherC's github repo](https://github.com/ThatcherC/APT3000), modified to meet the needs of Open Weather.
 
-## To-do
+Open-weather is a project by Sophie Dyer and Sasha Engelmann probing the noisy relationships between bodies, atmospheres and weather systems through experiments in amateur radio, open data and feminist tactics of sensing and séance.
 
-+ Uploading resampled WAV files and displaying them in A, B and A/B formats, like APT 3000
-+ Choosing the demodulation method from
-
-    1. absolute value
-    2. cosine
-    3. fourier / hilbert transform
-
-+ On the processed image, adding histogram equalisation if desired
-+ Choosing where the programme searches for the sync (after what number of seconds or samples)
-+ Saving processed images
-+ Adding some text by the Open Weather team about what the steps mean and what is happening in the decoding process (so people understand why it matters to change the demod method, why the sync can be searched for in different places, etc).
-+ Automatic resampling (from 44100)
-+ Allow user to specify the time at which the program starts looking for the sync signal (to cut off the heavy noise in the beginning of transmission)
+Open Weather APT further includes the work of Grayson Earle and Bill Liles.
 
 ## Works Cited
 

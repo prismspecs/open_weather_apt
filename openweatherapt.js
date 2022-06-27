@@ -43,7 +43,7 @@ function start() {
 	} catch (error) {
 
 		$(".error_outer").fadeIn();
-		$(".error_inner .text").html("Please first select a file");
+		$(".error_inner .text").html("Please upload a WAV file");
 
 		return;
 
@@ -132,6 +132,8 @@ function start() {
 
 
 			// chartArray(normalizedData, 10);
+
+			viewAB();
 
 		}
 	};
@@ -343,7 +345,7 @@ function filterSamples(input) {
 
 	console.log("filtered");
 	// console.log(filteredData);
-
+	$(".view_buttons_label").css('display','inline-block');
 	$(".view_buttons").show();
 	$("#spinner").hide();
 

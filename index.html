@@ -42,16 +42,14 @@
 
 
 
-
-
     <div class="container">
 
         <div class="navbar">
             <h1>open-weather apt</h1>
             <ul class="nav-items">
-                <li><a onclick="colorChange()" href="javascript:void(0);">color change</a></li>
-                <li><a href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images">more info</a></li>
-                <li><a href="https://open-weather.community">open-weather</a></li>
+                <li><a href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images" target="_blank">more info</a>&nbsp;<img src="external.png" class="external_link"></li>
+                <li><a href="https://open-weather.community" target="_blank">open-weather</a>&nbsp;<img src="external.png" class="external_link"></li>
+                <li><a style="text-decoration:none;" onclick="colorChange()" href="javascript:void(0);">🌈</a></li>
             </ul>
         </div>
 
@@ -59,7 +57,7 @@
         <div class="flex">
 
             <div class="f_note">
-                open-weather apt is a browser based decoder for NOAA satellite images.
+                open-weather apt is a browser based decoder for National Oceanic and Atmospheric Administration (NOAA) satellite images.
             </div>
 
             <div class="f_content">
@@ -67,7 +65,7 @@
                 <h2>Instructions</h2>
                 <div class="indent">
 
-                    <p>1. Select a WAV file from your computer (<a href="https://dropbox.com/s/xif376sqn09bps9/20210720111842.wav" target="_blank">here is a sample</a>)</p>
+                    <p>1. Upload a WAV file (<a href="https://dropbox.com/s/xif376sqn09bps9/20210720111842.wav" target="_blank">here is a sample</a>)</p>
 
                     <input class="browse" type="file" id="fileInput" value="Open WAV file" autocomplete="off">
                     <em><input type="text" class="form-control" id="fileName" style="opacity:0;" readonly autocomplete="off"></em>
@@ -114,7 +112,7 @@
         <div class="flex">
 
             <div class="f_note">
-                open-weather apt is forked from Thatcher’s <a href="https://jthatch.com/APT3000/APT3000.html">APT 3000</a>. It is a collaboration between <a href="https://open-weather.community/">open-weather</a>, Bill Liles NQ6Z and Grayson Earle.
+                open-weather apt is forked from Thatcher’s <a href="https://jthatch.com/APT3000/APT3000.html" target="_blank">APT 3000</a>&nbsp;<img src="external_white.png" class="external_link">. It is a collaboration between <a href="https://open-weather.community/" target="_blank">open-weather</a>&nbsp;<img src="external_white.png" class="external_link">, <a href="" target="_blank">Bill Liles NQ6Z</a>&nbsp;<img src="external_white.png" class="external_link"> and <a href="" target="_blank">Grayson Earle</a>&nbsp;<img src="external_white.png" class="external_link">.
             </div>
 
             <div class="f_content">
@@ -122,9 +120,9 @@
 
                 <div class="indent">
 
-                    <p>3. Create!</p>
+                    <p>3. Decode Image!</p>
 
-                    <button onclick="start()">Create Image</button>
+                    <button onclick="start()">Decode</button>
                 </div>
 
                 <div class="spinner-loader indent" id="spinner" style="visibility:hidden;margin:1rem 0px">
@@ -145,11 +143,12 @@
 
             <div class="f1">
 
-                <input class="view_buttons" value="View A" type="button" onclick="viewA()">
-                <input class="view_buttons" value="View B" type="button" onclick="viewB()">
-                <input class="view_buttons" value="View AB" type="button" onclick="viewAB()">
+                <div class="view_buttons_label">Select channel</div>
+                <input class="view_buttons" value="AB" type="button" onclick="viewAB()">
+                <input class="view_buttons" value="A" type="button" onclick="viewA()">
+                <input class="view_buttons" value="B" type="button" onclick="viewB()">
 
-                <div class="view_buttons"> (optional) search for first sync in <input id="sync_after" type="number" value="0" autocomplete=off maxlength="6" size="6"> seconds</div>
+                <div class="view_buttons"> (optional) search for first sync in <input id="sync_after" type="number" value="2" autocomplete=off maxlength="6" size="6"> seconds</div>
 
                 <div class="col-md-3">
                     <div class="alert-small alert-danger" role="alert" id="alert"></div>

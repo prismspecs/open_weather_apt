@@ -71,6 +71,8 @@ canvas {
     background-color: var(--main);
     padding: 1rem;
     line-height: 1.25rem;
+    border-radius: 9px;
+
 }
 
 .f_content {
@@ -99,6 +101,9 @@ canvas {
 }
 
 .view_buttons, .image_buttons, .histo_buttons {
+    display: none;
+}
+.view_buttons_label {
     display: none;
 }
 
@@ -141,6 +146,10 @@ a {
     margin-left: 1rem;
 }
 
+.external_link {
+    height:13px;
+    opacity:.7;
+}
 @media only screen and (max-width: 600px) {
     .error_inner {
         transform: unset;
