@@ -11,7 +11,6 @@ var normalizedData;
 // var imageCanvas = document.getElementById("output");
 // var imageCTX = imageCanvas.getContext("2d");
 
-
 var lastViewOption = "AB";
 
 window.onload = function() {
@@ -31,6 +30,7 @@ window.onload = function() {
 
 	fileInput.addEventListener('change', function(e) {
 		file = fileInput.files[0];
+		reset();
 	});
 }
 
@@ -42,8 +42,7 @@ function start() {
 
 	} catch (error) {
 
-		$(".error_outer").fadeIn();
-		$(".error_inner .text").html("Please upload a WAV file");
+		popup("Please select a WAV file on your device");
 
 		return;
 
@@ -139,6 +138,11 @@ function start() {
 	};
 }
 
+
+function popup(text) {
+	$(".error_outer").fadeIn();
+	$(".error_inner .text").html(text);
+}
 
 
 // experimenting...
@@ -419,6 +423,8 @@ function chartArray(input, resolution) {
 
 function createImage(startingIndex, pixelStart, imgWidth) {
 
+	resetEqualizationButtons();
+
 	// reveal controls for saving image etc
 	$(".image_buttons").show();
 
@@ -532,16 +538,42 @@ function histogramEqualization() {
 	mergedPlanes.push_back(V);
 	cv.merge(mergedPlanes, src);
 	cv.cvtColor(src, dst, cv.COLOR_HSV2RGB, 0);
-	cv.imshow("equalized", dst);
+	cv.imshow("output", dst);
 	src.delete();
 	dst.delete();
 	hsvPlanes.delete();
 	mergedPlanes.delete();
 
-	$(".histo_buttons").show();
+	// $(".histo_buttons").show();
+	$("#remove_equalize_button").attr("disabled", false);
+	$("#equalize_button").attr("disabled", true);
+
 }
 
+function removeEqualization() {
 
+	renderAgain();
+
+	resetEqualizationButtons();
+
+}
+
+function resetEqualizationButtons() {
+	$("#remove_equalize_button").attr("disabled", true);
+	$("#equalize_button").attr("disabled", false);
+}
+
+function reset() {
+
+	$(".output_container").hide();
+	resetEqualizationButtons();
+	$(".view_buttons_label").css('display','none');
+	$(".view_buttons").hide();
+	$(".image_buttons").hide();
+	$("#sync_after").val(2);
+
+	console.log("resetting");
+}
 
 
 
@@ -674,6 +706,10 @@ function ifft_cpx(xr, xi) {
 
 $('#sync_after').on('input', function() {
 	// do something
+	renderAgain();
+});
+
+function renderAgain() {
 	switch (lastViewOption) {
 		case "A":
 			viewA();
@@ -685,7 +721,7 @@ $('#sync_after').on('input', function() {
 			viewAB();
 			break;
 	}
-});
+}
 
 function calcSyncStart() {
 	var secs = $("#sync_after").val();
@@ -707,6 +743,11 @@ function viewA() {
 	createImage(convolveWithSync(syncStart, 22050).index, pixelStart, 1040);
 
 	lastViewOption = "A";
+
+	$(".selected").removeClass("selected");
+	$("#viewA").addClass("selected");
+
+	$(".output_container").show();
 }
 
 function viewB() {
@@ -715,6 +756,11 @@ function viewB() {
 	createImage(convolveWithSync(syncStart, 22050).index, pixelStart, 1040);
 
 	lastViewOption = "B";
+
+	$(".selected").removeClass("selected");
+	$("#viewB").addClass("selected");
+
+	$(".output_container").show();
 }
 
 function viewAB() {
@@ -723,6 +769,11 @@ function viewAB() {
 	createImage(convolveWithSync(syncStart, 22050).index, 0, 2080);
 
 	lastViewOption = "AB";
+
+	$(".selected").removeClass("selected");
+	$("#viewAB").addClass("selected");
+
+	$(".output_container").show();
 }
 
 

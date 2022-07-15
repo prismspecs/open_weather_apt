@@ -45,10 +45,11 @@
     <div class="container">
 
         <div class="navbar">
-            <h1>open-weather apt</h1>
+            <h1><a href="https://open-weather.community" target="_blank">open-weather</a> apt</h1>
             <ul class="nav-items">
-                <li><a href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images" target="_blank">more info</a>&nbsp;<img src="external.png" class="external_link"></li>
-                <li><a href="https://open-weather.community" target="_blank">open-weather</a>&nbsp;<img src="external.png" class="external_link"></li>
+                <li><a href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images" target="_blank">more info</a></li>
+                <!-- <li><a href="https://open-weather.community" target="_blank">open-weather</a></li> -->
+                <li><a onclick="popup('Open-weather apt does not store your personal data, including your location or any files you upload')" href="javascript:void(0);">your data</a></li>
                 <li><a style="text-decoration:none;" onclick="colorChange()" href="javascript:void(0);">🌈</a></li>
             </ul>
         </div>
@@ -65,7 +66,7 @@
                 <h2>Instructions</h2>
                 <div class="indent">
 
-                    <p>1. Upload a WAV file (<a href="https://dropbox.com/s/xif376sqn09bps9/20210720111842.wav" target="_blank">here is a sample</a>)</p>
+                    <p>1. Select a WAV file on your device (<a href="https://dropbox.com/s/xif376sqn09bps9/20210720111842.wav" target="_blank">here is a sample</a>)</p>
 
                     <input class="browse" type="file" id="fileInput" value="Open WAV file" autocomplete="off">
                     <em><input type="text" class="form-control" id="fileName" style="opacity:0;" readonly autocomplete="off"></em>
@@ -89,17 +90,17 @@
                     <p>2. Select a demodulation method</p>
 
                     <div>
-                        <input type="radio" id="abs" name="demod_mode" value="abs" checked>
+                        <input type="radio" class="radio-button" id="abs" name="demod_mode" value="abs" checked>
                         <label for="abs">Absolute Value</label>
                     </div>
 
                     <div>
-                        <input type="radio" id="cos" name="demod_mode" value="cos">
+                        <input type="radio" class="radio-button" id="cos" name="demod_mode" value="cos">
                         <label for="cos">Cosine</label>
                     </div>
 
                     <div>
-                        <input type="radio" id="hilbertfft" name="demod_mode" value="hilbertfft">
+                        <input type="radio" class="radio-button" id="hilbertfft" name="demod_mode" value="hilbertfft">
                         <label for="hilbertfft">HilbertFFT</label>
                     </div>
                 </div>
@@ -112,7 +113,7 @@
         <div class="flex">
 
             <div class="f_note">
-                open-weather apt is forked from Thatcher’s <a href="https://jthatch.com/APT3000/APT3000.html" target="_blank">APT 3000</a>&nbsp;<img src="external_white.png" class="external_link">. It is a collaboration between <a href="https://open-weather.community/" target="_blank">open-weather</a>&nbsp;<img src="external_white.png" class="external_link">, <a href="" target="_blank">Bill Liles NQ6Z</a>&nbsp;<img src="external_white.png" class="external_link"> and <a href="" target="_blank">Grayson Earle</a>&nbsp;<img src="external_white.png" class="external_link">.
+                open-weather apt is forked from Thatcher’s <a href="https://jthatch.com/APT3000/APT3000.html" target="_blank">APT 3000</a>. It is a collaboration between <a href="https://open-weather.community/" target="_blank">open-weather</a>, Bill Liles NQ6Z and <a href="https://graysonearle.com" target="_blank">Grayson Earle</a>.
             </div>
 
             <div class="f_content">
@@ -125,8 +126,8 @@
                     <button onclick="start()">Decode</button>
                 </div>
 
-                <div class="spinner-loader indent" id="spinner" style="visibility:hidden;margin:1rem 0px">
-                    Loading...
+                <div class="spinner-loader indent" id="spinner" style="visibility:hidden;">
+                    🛰️
                 </div>
 
             </div>
@@ -144,11 +145,13 @@
             <div class="f1">
 
                 <div class="view_buttons_label">Select channel</div>
-                <input class="view_buttons" value="AB" type="button" onclick="viewAB()">
-                <input class="view_buttons" value="A" type="button" onclick="viewA()">
-                <input class="view_buttons" value="B" type="button" onclick="viewB()">
 
-                <div class="view_buttons"> (optional) search for first sync in <input id="sync_after" type="number" value="2" autocomplete=off maxlength="6" size="6"> seconds</div>
+                <input class="view_buttons button" id="viewAB" value="AB" type="button" onclick="viewAB()">
+                <input class="view_buttons button" id="viewA" value="A" type="button" onclick="viewA()">
+                <input class="view_buttons button" id="viewB" value="B" type="button" onclick="viewB()">
+
+                <div class="view_buttons"> <br>Open-weather apt searches for the first sync in the first two seconds of audio
+<br>(optional) search for first sync in <input id="sync_after" type="number" value="2" autocomplete=off maxlength="6" size="6"> seconds</div>
 
                 <div class="col-md-3">
                     <div class="alert-small alert-danger" role="alert" id="alert"></div>
@@ -165,14 +168,14 @@
 
         </div>
 
-        <div class="flex">
+        <div class="flex" style="margin-top:-1rem;">
 
             <div class="f1">
 
+                <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Apply histogram equalisation</button>
+                <button class="image_buttons" id="remove_equalize_button" onclick="removeEqualization()" style="" disabled>Remove histogram equalisation</button>
+                <button class="image_buttons" id="download_output" onclick="">Download image</button>
 
-
-                <button class="image_buttons" id="download_output" onclick="">Save Image</button>
-                <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Histogram Equalize Image</button>
 
                 <script>
                     var download_output = document.getElementById('download_output');
@@ -231,9 +234,9 @@
     </div>
 
 
-
-
     <script src='openweatherapt.js'></script>
+
+
 </body>
 
 </html>

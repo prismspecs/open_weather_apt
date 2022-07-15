@@ -36,7 +36,7 @@ canvas {
     box-shadow: 5px 5px 5px #aaa;
     padding: 20px;
     position: fixed;
-    width: 400px;
+    width: 420px;
     max-width: 100%;
     /* height:240px; */
     top: 25%;
@@ -72,7 +72,6 @@ canvas {
     padding: 1rem;
     line-height: 1.25rem;
     border-radius: 9px;
-
 }
 
 .f_content {
@@ -102,6 +101,9 @@ canvas {
 
 .view_buttons, .image_buttons, .histo_buttons {
     display: none;
+}
+#download_output {
+    float:right;
 }
 .view_buttons_label {
     display: none;
@@ -147,9 +149,30 @@ a {
 }
 
 .external_link {
-    height:13px;
-    opacity:.7;
+    height: 13px;
+    opacity: .7;
 }
+
+.button:hover, button:hover {
+    border-color: #00aa6e;
+}
+
+.selected {
+    background-color: #00aa6e;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.spinner-loader {
+    font-size: 40px;
+    animation: blinker 1s linear infinite;
+    margin-top:1rem;
+}
+
 @media only screen and (max-width: 600px) {
     .error_inner {
         transform: unset;
@@ -171,7 +194,11 @@ a {
     .nav-items li {
         display: unset;
         margin-left: unset;
-        margin-right:1rem;
-
+        margin-right: 1rem;
+    }
+    .image_buttons {
+        /* display:block; */
+        float:none;
+        margin-top:12px;
     }
 }
