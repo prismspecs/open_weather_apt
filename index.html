@@ -3,6 +3,10 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta property="og:title" content="open-weather apt — satellite image decoder" />
+    <meta property="og:description" content="open-weather apt is a simple browser based decoder for National Oceanic and Atmospheric Administration (NOAA) satellite images. Have a go!" />
+    <meta property="og:image" content="https://apt.open-weather.community/og-image.png" />
+
     <script src="wav.js"></script>
     <script src="dsp.js"></script>
     <script src="fft.js"></script>
@@ -20,7 +24,7 @@
     <link href="reset.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 
-    <title>open weather apt</title>
+    <title>open-weather apt</title>
 
 </head>
 
@@ -47,9 +51,9 @@
         <div class="navbar">
             <h1><a href="https://open-weather.community" target="_blank">open-weather</a> apt</h1>
             <ul class="nav-items">
-                <li><a href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images" target="_blank">documentation</a> on Public Lab</li>
+                <li><a href="https://publiclab.org/notes/sashae/05-03-2022/an-accessible-browser-based-decoder-for-noaa-images" target="_blank">Documentation</a> on Public Lab</li>
                 <!-- <li><a href="https://open-weather.community" target="_blank">open-weather</a></li> -->
-                <li><a onclick="popup('Open-weather apt does not store your personal data, including your location or any files you upload')" href="javascript:void(0);">your data</a></li>
+                <li><a onclick="popup('Open-weather apt does not store your personal data, including your location or any files you upload')" href="javascript:void(0);">Privacy</a></li>
                 <li><a style="text-decoration:none;" onclick="colorChange()" href="javascript:void(0);">🌈</a></li>
             </ul>
         </div>
@@ -121,7 +125,7 @@
 
                 <div class="indent">
 
-                    <p>3. Decode Image!</p>
+                    <p>3. Decode image!</p>
 
                     <button onclick="start()">Decode</button>
                 </div>
@@ -150,8 +154,7 @@
                 <input class="view_buttons button" id="viewA" value="A" type="button" onclick="viewA()">
                 <input class="view_buttons button" id="viewB" value="B" type="button" onclick="viewB()">
 
-                <div class="view_buttons"> <br>Open-weather apt searches for the first sync in the first two seconds of audio
-<br>(optional) search for first sync in <input id="sync_after" type="number" value="2" autocomplete=off maxlength="6" size="6"> seconds</div>
+                <div class="view_buttons"> <br>Search for first sync in the first <input id="sync_after" type="number" value="2" autocomplete=off maxlength="6" size="6"> seconds of audio.</div>
 
                 <div class="col-md-3">
                     <div class="alert-small alert-danger" role="alert" id="alert"></div>
