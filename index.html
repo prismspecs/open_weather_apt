@@ -156,6 +156,10 @@
 
                 <div class="view_buttons"> <br>Search for first sync in the first <input id="sync_after" type="number" value="2" autocomplete=off maxlength="6" size="6"> seconds of audio.</div>
 
+                <div class="view_buttons"> <br>Turn histogram equalization <button class="image_buttons selected" id="remove_equalize_button" onclick="removeEqualization()">OFF</button><button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">ON</button><button class="image_buttons" id="download_output" onclick="">Download image</button> </div>
+
+
+
                 <div class="col-md-3">
                     <div class="alert-small alert-danger" role="alert" id="alert"></div>
                 </div>
@@ -175,9 +179,9 @@
 
             <div class="f1">
 
-                <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Apply histogram equalisation</button>
+                <!-- <button class="image_buttons" id="equalize_button" onclick="histogramEqualization()">Apply histogram equalisation</button>
                 <button class="image_buttons" id="remove_equalize_button" onclick="removeEqualization()" style="" disabled>Remove histogram equalisation</button>
-                <button class="image_buttons" id="download_output" onclick="">Download image</button>
+                <button class="image_buttons" id="download_output" onclick="">Download image</button> -->
 
 
                 <script>

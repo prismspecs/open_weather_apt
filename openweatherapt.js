@@ -517,11 +517,6 @@ function convolveWithSync(start, range) {
 
 function histogramEqualization() {
 
-	// set up proper canvas sizing
-	// $("#equalized").width = imageCanvas.width;
-	// $("#equalized").height = imageCanvas.height;
-	//
-
 	let imgElement = document.getElementById("output");
 	let src = cv.imread(imgElement);
 	let dst = new cv.Mat();
@@ -544,23 +539,26 @@ function histogramEqualization() {
 	hsvPlanes.delete();
 	mergedPlanes.delete();
 
-	// $(".histo_buttons").show();
-	$("#remove_equalize_button").attr("disabled", false);
-	$("#equalize_button").attr("disabled", true);
+	$("#equalize_button").addClass("selected");
+	$("#remove_equalize_button").removeClass("selected");
 
 }
 
 function removeEqualization() {
 
 	renderAgain();
+	$("#equalize_button").removeClass("selected");
+	$("#remove_equalize_button").addClass("selected");
 
-	resetEqualizationButtons();
+	// resetEqualizationButtons();
 
 }
 
 function resetEqualizationButtons() {
-	$("#remove_equalize_button").attr("disabled", true);
-	$("#equalize_button").attr("disabled", false);
+	$("#equalize_button").removeClass("selected");
+	$("#remove_equalize_button").addClass("selected");
+	// $("#remove_equalize_button").attr("disabled", true);
+	// $("#equalize_button").attr("disabled", false);
 }
 
 function reset() {
@@ -744,7 +742,7 @@ function viewA() {
 
 	lastViewOption = "A";
 
-	$(".selected").removeClass("selected");
+	$(".view_buttons.selected").removeClass("selected");
 	$("#viewA").addClass("selected");
 
 	$(".output_container").show();
@@ -757,7 +755,7 @@ function viewB() {
 
 	lastViewOption = "B";
 
-	$(".selected").removeClass("selected");
+	$(".view_buttons.selected").removeClass("selected");
 	$("#viewB").addClass("selected");
 
 	$(".output_container").show();
@@ -770,7 +768,7 @@ function viewAB() {
 
 	lastViewOption = "AB";
 
-	$(".selected").removeClass("selected");
+	$(".view_buttons.selected").removeClass("selected");
 	$("#viewAB").addClass("selected");
 
 	$(".output_container").show();
