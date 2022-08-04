@@ -199,9 +199,14 @@ a {
     }
 
     .nav-items li {
-        display: unset;
+        display: block;
         margin-left: unset;
         margin-right: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .rainbow-button {
+        font-size:1.5rem;
     }
     .image_buttons {
         /* display:block; */
