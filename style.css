@@ -102,7 +102,10 @@ canvas {
 .view_buttons, .image_buttons, .histo_buttons {
     display: none;
     border:none;
-    border-radius: 0px;
+}
+
+button, input {
+    border-radius: 4px;
 }
 
 
