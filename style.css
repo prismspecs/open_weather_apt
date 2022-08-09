@@ -101,11 +101,14 @@ canvas {
 
 .view_buttons, .image_buttons, .histo_buttons {
     display: none;
+    border:none;
+    border-radius: 0px;
 }
 
 
+
 .view_buttons {
-    border-radius:4px;
+    /* border-radius:4px; */
     min-width:50px;
 }
 
@@ -168,6 +171,10 @@ a {
     background-color: #00aa6e;
 }
 
+.mobile_only {
+    display:none;
+}
+
 @keyframes blinker {
     50% {
         opacity: 0;
@@ -208,9 +215,18 @@ a {
     .rainbow-button {
         font-size:1.5rem;
     }
+
     .image_buttons {
         /* display:block; */
         float:none;
         margin-top:12px;
+    }
+
+    .desktop_only {
+        display: none;
+    }
+    .mobile_only {
+        display:block;
+        margin-top:4px;
     }
 }
